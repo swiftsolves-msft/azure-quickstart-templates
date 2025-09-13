@@ -26,7 +26,7 @@
       },
       "dataRetention": {
         "type": "int",
-        "defaultValue": 90,
+        "defaultValue": 30,
         "minValue": 7,
         "maxValue": 730,
         "metadata": {
@@ -54,41 +54,6 @@
           "retention": "[parameters('dataRetention')]"
         }
       },
-      {
-        "type": "Microsoft.OperationsManagement/solutions",
-        "name": "[concat(parameters('omsSolutionsName')[copyIndex()], '(', parameters('omsWorkspaceName'), ')')]",
-        "apiVersion": "2015-11-01-preview",
-        "location": "[parameters('location')]",
-        "dependsOn": [
-          "[parameters('omsWorkspaceName')]"
-        ],
-        "copy": {
-          "name": "copy-oms-solutions",
-          "count": "[length(parameters('omsSolutionsName'))]"
-        },
-        "plan": {
-          "name": "[concat(parameters('omsSolutionsName')[copyIndex()], '(', parameters('omsWorkspaceName'), ')')]",
-          "product": "[concat('OMSGallery/', parameters('omsSolutionsName')[copyIndex()])]",
-          "promotionCode": "",
-          "publisher": "Microsoft"
-        },
-        "properties": {
-          "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('omsWorkspaceName'))]"
-        }
-      },
-      {
-        "type": "Microsoft.OperationalInsights/workspaces/datasources",
-        "kind": "AzureActivityLog",
-        "name": "[concat(parameters('omsWorkspaceName'), '/', subscription().subscriptionId)]",
-        "apiVersion": "2020-08-01",
-        "location": "[parameters('location')]",
-        "dependsOn": [
-          "[parameters('omsWorkspaceName')]"
-        ],
-        "properties": {
-          "linkedResourceId": "[subscriptionResourceId('microsoft.insights/eventTypes','management')]"
-        }
-      }
     ],
     "outputs": {
       "workspaceName": {
